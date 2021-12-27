@@ -81,7 +81,7 @@ int main()
                 do_queue.clear();
             }
             else if(do_queue.size()==0){//无效输入
-                std::cout<<"!"<<std::endl;
+                std::cout<<"无效输入，请检查语法是否有误!"<<std::endl;
                 userInput.clear();
                 do_queue.clear();
                 continue;

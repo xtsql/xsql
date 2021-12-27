@@ -16,7 +16,7 @@
 #include <iostream>
 using namespace std;
 
-#define _COMPILE_DEBUG_ 5
+// #define _COMPILE_DEBUG_ 5
 
 cp::err_code cp::analysis(const char *str, std::vector<sql_program_t> &result, int str_len)
 {

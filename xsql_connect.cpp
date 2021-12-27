@@ -35,6 +35,7 @@ std::vector<expl::err_code> expl::explain_queue(cp::sql_program_t queue){
 
             case cp::CMD_SELECT:
                 res_single = select_turple(item);
+                break;
 
             case cp::CMD_SHOWT:
                 res_single = show_t();
@@ -166,13 +167,16 @@ expl::err_code expl::show_t(){
 
 expl::err_code expl::select_turple(cp::sql_cmd_t cmd){
     Disk_table* table = (Disk_table*) cmd.op1;
-    std::vector<std::string>col_names = table->get_column_name();
-    std::vector<Type>col_types = table->get_type_list();
+    Disk_table* head_table = (Disk_table*) cmd.op3;
+    std::vector<std::string>col_names = head_table->get_column_name();
+    std::vector<Type>col_types = head_table->get_type_list();
+    printf("============表头============\n");
     printf("| ");
-    for(auto &item:*(std::vector<int64_t>*)cmd.op2){
-        printf("%s\t",col_names[item].c_str());
+    for(auto &item:col_names){
+        printf("%s\t|",item.c_str());
     }
-    printf("|\n");
+    printf("\n");
+    printf("==========================\n");
     table->set_i_begin();
     while(!table->i_is_end()){
         printf("| ");
@@ -190,29 +194,29 @@ expl::err_code expl::select_turple(cp::sql_cmd_t cmd){
             switch (col_types[item].type)
             {
                 case CHAR:
-                    printf("%s\t",(char *)value0.value);
+                    printf("%s\t|",(char *)value0.value);
                     break;
                 
                 case INT:
-                    printf("%d\t",*(int*)&value0.value);
+                    printf("%d\t|",*(int*)&value0.value);
                     break;
                 
                 case LONG:
-                    printf("%lld\t",*(int64_t*)&value0.value);
+                    printf("%lld\t|",*(int64_t*)&value0.value);
                     break;
                 
                 case FLOAT:
-                    printf("%f\t",*(float*)&value0.value);
+                    printf("%f\t|",*(float*)&value0.value);
                     break;
                 
                 case DOUBLE:
-                    printf("%lf\t",*(double*)&value0.value);
+                    printf("%lf\t|",*(double*)&value0.value);
                     break;
                 
                 case BOOLEAN:
                     bool temp;
                     temp = *(bool *)&value0.value;
-                    std::cout<<temp<<'\t';
+                    std::cout<<temp<<'\t|';
                     break;
                 
                 default:
@@ -220,7 +224,7 @@ expl::err_code expl::select_turple(cp::sql_cmd_t cmd){
                     break;
             }
         }
-        printf("|\n");
+        printf("\n");
         table->inc_i();
     }
     delete (Table*)cmd.op1;
@@ -236,17 +240,17 @@ expl::err_code expl::delete_turple(cp::sql_cmd_t cmd){
     }else{
         cur_db = *(std::string*)cmd.op2;
     }
-    printf("==========>into\n");
+    // printf("==========>into\n");
     Disk_table *table = new (Disk_table)(Disk_table::construct_helper(cur_db, *(std::string*)cmd.op1));
-    printf("%p\n",table);
-    printf("==========>construct failed\n");
+    // printf("%p\n",table);
+    // printf("==========>construct failed\n");
     table->set_i_begin();
-    printf("==========>set begin failed\n");
+    // printf("==========>set begin failed\n");
     while(!table->i_is_end()){
-        printf("==========>not end\n");
+        // printf("==========>not end\n");
         table->remove_i();
     }
-    printf("==========>end\n");
+    // printf("==========>end\n");
     delete table;
     return expl::SUCCESS;
 }
