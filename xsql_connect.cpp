@@ -35,6 +35,7 @@ std::vector<expl::err_code> expl::explain_queue(cp::sql_program_t queue){
 
             case cp::CMD_SELECT:
                 res_single = select_turple(item);
+                break;
 
             case cp::CMD_SHOWT:
                 res_single = show_t();
