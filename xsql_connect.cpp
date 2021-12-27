@@ -167,12 +167,13 @@ expl::err_code expl::show_t(){
 
 expl::err_code expl::select_turple(cp::sql_cmd_t cmd){
     Disk_table* table = (Disk_table*) cmd.op1;
-    std::vector<std::string>col_names = table->get_column_name();
-    std::vector<Type>col_types = table->get_type_list();
+    Disk_table* head_table = (Disk_table*) cmd.op3;
+    std::vector<std::string>col_names = head_table->get_column_name();
+    std::vector<Type>col_types = head_table->get_type_list();
     printf("============表头============\n");
     printf("| ");
-    for(auto &item:*(std::vector<int64_t>*)cmd.op2){
-        printf("%s\t|",col_names[item].c_str());
+    for(auto &item:col_names){
+        printf("%s\t|",item.c_str());
     }
     printf("\n");
     printf("==========================\n");
