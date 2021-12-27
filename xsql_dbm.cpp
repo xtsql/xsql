@@ -64,6 +64,7 @@ try
     return 0;
 }
 __xsql_dbm_handle_exception_last();
+#undef __xsql_dbm_func_name
 
 const std::string &Dbm::get_useing_database()
 {
@@ -286,6 +287,7 @@ try
     return 0;
 }
 __xsql_dbm_handle_exception_last(Dbm::create_table);
+#undef __xsql_dbm_func_name
 
 #define __xsql_dbm_func_name "Dbm::drop_table"
 int64_t Dbm::drop_table(const std::string &db_i_name, const std::string &table_name)
@@ -331,6 +333,7 @@ try
     return 0;
 }
 __xsql_dbm_handle_exception_last(Dbm::drop_table);
+#undef __xsql_dbm_func_name
 
 #define __xsql_dbm_func_name "Dbm::show_tables"
 int64_t Dbm::show_tables(const std::string &database_in_name, std::vector<std::string> *names)
