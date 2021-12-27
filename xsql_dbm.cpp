@@ -64,6 +64,7 @@ try
     return 0;
 }
 __xsql_dbm_handle_exception_last();
+#undef __xsql_dbm_func_name
 
 const std::string &Dbm::get_useing_database()
 {
@@ -261,41 +262,32 @@ try
         }
         __xsql_dbm_try_delete_in_helper(Dbm::create_table, table_path, free(buf); free(column_size_list););
 
-
-
         free(column_size_list);
 
-
-
+        try
         {
-            FILE *fp;
+            FILE* const fp = __xsql_fopen((table_path / "header").c_str(), __auto_wstr("wb"));
             try
             {
-                fp = __xsql_fopen((table_path / "header").c_str(), __auto_wstr("wb"));
-                if ( fwrite(buf, sizeof(uint64_t) + sizeof(uint64_t) + sizeof(primary_key) + sizeof(uint64_t) + (sizeof(Type::type) + sizeof(Type::size)) * column_num, 1, fp) != 1 )
-                {
-                    __xsql_fclose(fp);
-                    throw xsql_io_exception();
-                }
+                __xsql_fwrite(buf, sizeof(uint64_t) + sizeof(uint64_t) + sizeof(primary_key) + sizeof(uint64_t) + (sizeof(Type::type) + sizeof(Type::size)) * column_num, 1, fp);
             }
-            __xsql_dbm_try_delete_in_helper(Dbm::create_table, table_path, free(buf););
-
-
-
-            free(buf);
-
-
-
-            try
+            catch ( ... )
             {
+                __xsql_dbm_print_exception("");
                 __xsql_fclose(fp);
+                throw;
             }
-            __xsql_dbm_try_delete_in_helper(Dbm::create_table, table_path, );
+            __xsql_fclose(fp);
         }
+        __xsql_dbm_try_delete_in_helper(Dbm::create_table, table_path, free(buf););
+
+
+        free(buf);
     }
     return 0;
 }
 __xsql_dbm_handle_exception_last(Dbm::create_table);
+#undef __xsql_dbm_func_name
 
 #define __xsql_dbm_func_name "Dbm::drop_table"
 int64_t Dbm::drop_table(const std::string &db_i_name, const std::string &table_name)
@@ -341,6 +333,7 @@ try
     return 0;
 }
 __xsql_dbm_handle_exception_last(Dbm::drop_table);
+#undef __xsql_dbm_func_name
 
 #define __xsql_dbm_func_name "Dbm::show_tables"
 int64_t Dbm::show_tables(const std::string &database_in_name, std::vector<std::string> *names)

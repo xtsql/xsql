@@ -87,10 +87,20 @@ static inline long int __xsql_ftell(FILE *a)
     do \
     { \
         size_t __xsql__count = c; \
-        if ( fwrite(a, b, __xsql__count, d) != __xsql__count ) \
+        FILE *const __xsql_fp = d; \
+        if ( fwrite(a, b, __xsql__count, __xsql_fp) != __xsql__count ) \
         { \
-            fprintf(stderr, "fwrite出错！\n"); \
+            fprintf(stderr, "异常：在__xsql_fwrite；文件操作出错\n"); \
             throw xsql_exception_fwrite(); \
+        } \
+        try \
+        { \
+            __xsql_fseek(__xsql_fp, 0, SEEK_CUR); \
+        } \
+        catch ( ... ) \
+        { \
+            fprintf(stderr, "异常：在__xsql_fwrite；\n"); \
+            throw; \
         } \
     } while ( 0 )
 
