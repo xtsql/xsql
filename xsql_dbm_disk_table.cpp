@@ -171,6 +171,21 @@ void Disk_table::set_i_begin()
     f_pos = 0;
     rewind(bit_fp);
     rewind(main_fp);
+    while ( 1 )
+    {
+        if ( f_pos == reserve )
+        {
+            return;
+        }
+        uint8_t temp;
+        __xsql_fread(&temp, 1, 1, bit_fp);
+        if ( temp == 1 )
+        {
+            __xsql_fseek(bit_fp, -1, SEEK_CUR);
+            return;
+        }
+        f_pos++;
+    }
 }
 // mark
 void Disk_table::inc_i()
